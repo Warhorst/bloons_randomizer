@@ -10,6 +10,12 @@ pub struct BloonsConfig {
     pub modes: Vec<Mode>
 }
 
+impl BloonsConfig {
+    pub fn get_towers_of_category(&self, category: Category) -> impl IntoIterator<Item=&Tower> {
+        self.towers.iter().filter(move |t| t.category == category)
+    }
+}
+
 #[derive(Deserialize)]
 pub struct Hero {
     pub name: String,
@@ -23,7 +29,7 @@ pub struct Tower {
     pub icon: String
 }
 
-#[derive(Deserialize, Copy, Clone, Debug)]
+#[derive(Deserialize, Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Category {
     Primary,
     Military,

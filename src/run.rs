@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::prelude::PositionType::Absolute;
 use crate::AppState::Run;
-use crate::bloons_config::Category;
+use crate::bloons_config::{BloonsConfig, Category};
 use crate::bloons_config::Category::*;
 
 pub(super) struct RunPlugin;
@@ -9,6 +9,7 @@ pub(super) struct RunPlugin;
 impl Plugin for RunPlugin {
     fn build(&self, app: &mut App) {
         app
+            .init_resource::<Settings>()
             .add_systems(
                 OnEnter(Run),
                 (
@@ -16,18 +17,104 @@ impl Plugin for RunPlugin {
                     spawn_ui
                 ),
             )
+            .add_systems(
+                Update,
+                (
+                    process_randomize_pressed,
+                    process_increase_tower_pressed,
+                    process_decrease_tower_pressed
+                ).run_if(in_state(Run)),
+            )
         ;
     }
 }
 
-#[derive(Component)]
+#[derive(Resource, Default)]
+struct Settings {
+    num_primary: u8,
+    num_military: u8,
+    num_magic: u8,
+    num_support: u8,
+}
+
+impl Settings {
+    fn set_amount(&mut self, category: Category, amount: u8) {
+        match category {
+            Primary => self.num_primary = amount,
+            Military => self.num_military = amount,
+            Magic => self.num_magic = amount,
+            Support => self.num_support = amount,
+        }
+    }
+}
+
+#[derive(Component, Deref)]
 struct TowerAmountText(pub Category);
 
-#[derive(Component)]
+#[derive(Component, Deref)]
 struct TowerAmountUp(pub Category);
 
-#[derive(Component)]
+#[derive(Component, Deref)]
 struct TowerAmountDown(pub Category);
+
+#[derive(Component)]
+struct RandomizeButton;
+
+fn process_randomize_pressed(
+    button_query: Query<&Interaction, (With<RandomizeButton>, Changed<Interaction>)>
+) {
+    for interaction in &button_query {
+        if let Interaction::Pressed = *interaction {
+            println!("Wololo")
+        }
+    }
+}
+
+fn process_increase_tower_pressed(
+    bloons_config: Res<BloonsConfig>,
+    mut settings: ResMut<Settings>,
+    button_query: Query<(&Interaction, &TowerAmountUp), Changed<Interaction>>,
+    mut amount_text_query: Query<(&mut Text, &TowerAmountText)>,
+) {
+    for (interaction, amount_up) in &button_query {
+        if let Interaction::Pressed = *interaction {
+            let category = **amount_up;
+            let max = bloons_config.get_towers_of_category(category).into_iter().count() as u8;
+            let mut text = amount_text_query
+                .iter_mut()
+                .filter(|(_, amount_text)| ***amount_text == category)
+                .map(|(text, _)| text)
+                .next()
+                .unwrap();
+            let current = text.sections[0].value.parse::<u8>().unwrap();
+            let new_current = u8::min(current + 1, max);
+            settings.set_amount(category, new_current);
+            text.sections[0].value = new_current.to_string();
+        }
+    }
+}
+
+fn process_decrease_tower_pressed(
+    mut settings: ResMut<Settings>,
+    button_query: Query<(&Interaction, &TowerAmountDown), Changed<Interaction>>,
+    mut amount_text_query: Query<(&mut Text, &TowerAmountText)>,
+) {
+    for (interaction, amount_down) in &button_query {
+        if let Interaction::Pressed = *interaction {
+            let category = **amount_down;
+            let mut text = amount_text_query
+                .iter_mut()
+                .filter(|(_, amount_text)| ***amount_text == category)
+                .map(|(text, _)| text)
+                .next()
+                .unwrap();
+            let current = text.sections[0].value.parse::<u8>().unwrap();
+            let new_current = current.saturating_sub(1);
+            settings.set_amount(category, new_current);
+            text.sections[0].value = new_current.to_string();
+        }
+    }
+}
 
 fn spawn_camera(
     mut commands: Commands
@@ -99,7 +186,8 @@ fn spawn_tower_slider(
                     ));
                 });
 
-            parent.spawn(
+            parent.spawn((
+                TowerAmountDown(category),
                 ButtonBundle {
                     style: Style {
                         width: Val::Percent(20.0),
@@ -112,10 +200,9 @@ fn spawn_tower_slider(
                     },
                     background_color: Color::rgb(0.15, 0.15, 0.15).into(),
                     ..default()
-                }
+                })
             ).with_children(|parent| {
-                parent.spawn((
-                    TowerAmountDown(category),
+                parent.spawn(
                     TextBundle::from_section(
                         "<",
                         TextStyle {
@@ -124,7 +211,7 @@ fn spawn_tower_slider(
                             color: Color::rgb(0.9, 0.9, 0.9),
                         },
                     )
-                ));
+                );
             });
 
             parent.spawn(
@@ -154,7 +241,8 @@ fn spawn_tower_slider(
                     ));
                 });
 
-            parent.spawn(
+            parent.spawn((
+                TowerAmountUp(category),
                 ButtonBundle {
                     style: Style {
                         width: Val::Percent(20.0),
@@ -167,10 +255,9 @@ fn spawn_tower_slider(
                     },
                     background_color: Color::rgb(0.15, 0.15, 0.15).into(),
                     ..default()
-                }
+                })
             ).with_children(|parent| {
-                parent.spawn((
-                    TowerAmountUp(category),
+                parent.spawn(
                     TextBundle::from_section(
                         ">",
                         TextStyle {
@@ -178,7 +265,7 @@ fn spawn_tower_slider(
                             font_size: 30.0,
                             color: Color::rgb(0.9, 0.9, 0.9),
                         },
-                    )));
+                    ));
             });
         })
     ;
@@ -187,11 +274,12 @@ fn spawn_tower_slider(
 fn spawn_randomize_button(
     parent: &mut ChildBuilder,
     asset_server: &AssetServer,
-    top_offset: f32
+    top_offset: f32,
 ) {
     parent
         .spawn((
-            Name::new("ReturnButton"),
+            Name::new("RandomizeButton"),
+            RandomizeButton,
             ButtonBundle {
                 style: Style {
                     width: Val::Percent(40.0),
