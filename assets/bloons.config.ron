@@ -1,0 +1,27 @@
+BloonsConfig(
+    heroes: [
+        Hero(
+            name: "Quincy",
+            icon: "./assets/heroes/quincy.png"
+        )
+    ],
+    towers: [
+        Tower(
+            name: "Dart Monkey",
+            category: Primary,
+            icon: "./assets/towers/dart_monkey.png"
+        )
+    ],
+    maps: [
+        Map(
+            name: "Monkey Meadows",
+            icon: "./assets/maps/monkey_meadows.png"
+        )
+    ],
+    modes: [
+        Mode(
+            name: "Easy Standard",
+            icon: "./assets/modes/easy.png"
+        )
+    ]
+)
