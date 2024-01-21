@@ -1,8 +1,9 @@
 use bevy::prelude::*;
 use bevy::prelude::PositionType::Absolute;
 use crate::AppState::Run;
-use crate::bloons_config::{BloonsConfig, Category};
+use crate::bloons_config::{BloonsConfig, Category, Hero, Map, Mode, Tower};
 use crate::bloons_config::Category::*;
+use crate::random_select::{random_select, Selection};
 
 pub(super) struct RunPlugin;
 
@@ -14,7 +15,7 @@ impl Plugin for RunPlugin {
                 OnEnter(Run),
                 (
                     spawn_camera,
-                    spawn_ui
+                    spawn_settings_ui
                 ),
             )
             .add_systems(
@@ -30,7 +31,7 @@ impl Plugin for RunPlugin {
 }
 
 #[derive(Resource, Default)]
-struct Settings {
+pub struct Settings {
     num_primary: u8,
     num_military: u8,
     num_magic: u8,
@@ -38,6 +39,15 @@ struct Settings {
 }
 
 impl Settings {
+    pub fn get_amount(&self, category: Category) -> u8 {
+        match category {
+            Primary => self.num_primary,
+            Military => self.num_military,
+            Magic => self.num_magic,
+            Support => self.num_support
+        }
+    }
+
     fn set_amount(&mut self, category: Category, amount: u8) {
         match category {
             Primary => self.num_primary = amount,
@@ -60,12 +70,29 @@ struct TowerAmountDown(pub Category);
 #[derive(Component)]
 struct RandomizeButton;
 
+#[derive(Component)]
+struct SelectionUi;
+
 fn process_randomize_pressed(
-    button_query: Query<&Interaction, (With<RandomizeButton>, Changed<Interaction>)>
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    config: Res<BloonsConfig>,
+    settings: Res<Settings>,
+    selection_uis: Query<Entity, With<SelectionUi>>,
+    button_query: Query<&Interaction, (With<RandomizeButton>, Changed<Interaction>)>,
 ) {
     for interaction in &button_query {
         if let Interaction::Pressed = *interaction {
-            println!("Wololo")
+            for entity in &selection_uis {
+                commands.entity(entity).despawn_recursive();
+            }
+
+            let selection = random_select(&config, &settings);
+            spawn_selection_ui(
+                &mut commands,
+                &asset_server,
+                selection
+            );
         }
     }
 }
@@ -116,13 +143,154 @@ fn process_decrease_tower_pressed(
     }
 }
 
+fn spawn_selection_ui(
+    commands: &mut Commands,
+    asset_server: &AssetServer,
+    selection: Selection,
+) {
+    commands.spawn((
+        SelectionUi,
+        NodeBundle {
+            style: Style {
+                width: Val::Px(800.0),
+                height: Val::Px(800.0),
+                top: Val::Px(200.0),
+                justify_content: JustifyContent::Start,
+                ..default()
+            },
+            ..default()
+        }
+    )).with_children(|parent| {
+        spawn_mode_ui(parent, asset_server, &selection.mode);
+        spawn_map_ui(parent, asset_server, &selection.map);
+        spawn_hero_ui(parent, asset_server, &selection.hero);
+        spawn_tower_ui(parent, asset_server, &selection.towers);
+    });
+}
+
+fn spawn_mode_ui(
+    parent: &mut ChildBuilder,
+    asset_server: &AssetServer,
+    mode: &Mode,
+) {
+    parent.spawn(NodeBundle {
+        style: Style {
+            width: Val::Percent(100.0),
+            height: Val::Percent(20.0),
+            justify_content: JustifyContent::Start,
+            position_type: Absolute,
+            ..default()
+        },
+        ..default()
+    }).with_children(|parent| {
+        parent.spawn((
+            NodeBundle {
+                style: Style {
+                    width: Val::Px(100.0),
+                    height: Val::Px(100.0),
+                    position_type: Absolute,
+                    ..default()
+                },
+                background_color: Color::WHITE.into(),
+                ..default()
+            },
+            UiImage::new(asset_server.load(mode.icon.clone())),
+        ));
+
+        parent.spawn(
+            NodeBundle {
+                style: Style {
+                    width: Val::Percent(60.0),
+                    height: Val::Px(100.0),
+                    left: Val::Percent(40.0),
+                    position_type: Absolute,
+                    ..default()
+                },
+                ..default()
+            })
+            .with_children(|parent| {
+                parent.spawn(TextBundle::from_section(
+                    mode.name.clone(),
+                    TextStyle {
+                        font: asset_server.load("font/FiraSans-Bold.ttf"),
+                        font_size: 30.0,
+                        color: Color::rgb(0.9, 0.9, 0.9),
+                    },
+                ));
+            });
+    });
+}
+
+fn spawn_map_ui(
+    parent: &mut ChildBuilder,
+    asset_server: &AssetServer,
+    map: &Map
+) {
+    parent.spawn((
+        NodeBundle {
+            style: Style {
+                width: Val::Px(100.0),
+                height: Val::Px(100.0),
+                top: Val::Percent(20.0),
+                ..default()
+            },
+            background_color: Color::WHITE.into(),
+            ..default()
+        },
+        UiImage::new(asset_server.load(map.icon.clone())),
+    ));
+}
+
+fn spawn_hero_ui(
+    parent: &mut ChildBuilder,
+    asset_server: &AssetServer,
+    hero: &Hero
+) {
+    parent.spawn((
+        NodeBundle {
+            style: Style {
+                width: Val::Px(100.0),
+                height: Val::Px(100.0),
+                top: Val::Percent(60.0),
+                ..default()
+            },
+            background_color: Color::WHITE.into(),
+            ..default()
+        },
+        UiImage::new(asset_server.load(hero.icon.clone())),
+    ));
+}
+
+fn spawn_tower_ui(
+    parent: &mut ChildBuilder,
+    asset_server: &AssetServer,
+    towers: &[Tower]
+) {
+    for (i, tower) in towers.iter().enumerate() {
+        parent.spawn((
+            NodeBundle {
+                style: Style {
+                    width: Val::Px(100.0),
+                    height: Val::Px(100.0),
+                    top: Val::Percent(80.0),
+                    left: Val::Px(50.0 * i as f32 ),
+                    ..default()
+                },
+                background_color: Color::WHITE.into(),
+                ..default()
+            },
+            UiImage::new(asset_server.load(tower.icon.clone())),
+        ));
+    }
+}
+
 fn spawn_camera(
     mut commands: Commands
 ) {
     commands.spawn(Camera2dBundle::default());
 }
 
-fn spawn_ui(
+fn spawn_settings_ui(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {

@@ -2,26 +2,143 @@ BloonsConfig(
     heroes: [
         Hero(
             name: "Quincy",
-            icon: "./assets/heroes/quincy.png"
+            icon: "heroes/quincy.webp"
+        ),
+        Hero(
+            name: "Sauda",
+            icon: "heroes/sauda.webp"
         )
     ],
     towers: [
         Tower(
             name: "Dart Monkey",
             category: Primary,
-            icon: "./assets/towers/dart_monkey.png"
-        )
+            icon: "towers/dart_monkey.webp"
+        ),
+        Tower(
+            name: "Boomerang",
+            category: Primary,
+            icon: "towers/boomerang.webp"
+        ),
+        Tower(
+            name: "Bomb Shooter",
+            category: Primary,
+            icon: "towers/bomb_shooter.webp"
+        ),
+        Tower(
+            name: "Tack Shooter",
+            category: Primary,
+            icon: "towers/tack_shooter.webp"
+        ),
+        Tower(
+            name: "Ice Monkey",
+            category: Primary,
+            icon: "towers/ice_monkey.webp"
+        ),
+        Tower(
+            name: "Sniper Monkey",
+            category: Military,
+            icon: "towers/sniper_monkey.webp"
+        ),
+        Tower(
+            name: "Monkey Sub",
+            category: Military,
+            icon: "towers/monkey_sub.webp"
+        ),
+        Tower(
+            name: "Monkey Buccaneer",
+            category: Military,
+            icon: "towers/monkey_buccaneer.webp"
+        ),
+        Tower(
+            name: "Monkey Ace",
+            category: Military,
+            icon: "towers/monkey_ace.webp"
+        ),
+        Tower(
+            name: "Heli Pilot",
+            category: Military,
+            icon: "towers/heli_pilot.webp"
+        ),
+        Tower(
+            name: "Mortar Monkey",
+            category: Military,
+            icon: "towers/mortar_monkey.webp"
+        ),
+        Tower(
+            name: "Dartling Gunner",
+            category: Military,
+            icon: "towers/dartling_gunner.webp"
+        ),
+        Tower(
+            name: "Wizard Monkey",
+            category: Magic,
+            icon: "towers/wizard_monkey.webp"
+        ),
+        Tower(
+            name: "Super Monkey",
+            category: Magic,
+            icon: "towers/super_monkey.webp"
+        ),
+        Tower(
+            name: "Ninja Monkey",
+            category: Magic,
+            icon: "towers/ninja_monkey.webp"
+        ),
+        Tower(
+            name: "Alchemist",
+            category: Magic,
+            icon: "towers/alchemist.webp"
+        ),
+        Tower(
+            name: "Druid Monkey",
+            category: Magic,
+            icon: "towers/druid_monkey.webp"
+        ),
+        Tower(
+            name: "Banana Farm",
+            category: Support,
+            icon: "towers/banana_farm.webp"
+        ),
+        Tower(
+            name: "Spike Factory",
+            category: Support,
+            icon: "towers/spike_factory.webp"
+        ),
+        Tower(
+            name: "Monkey Village",
+            category: Support,
+            icon: "towers/monkey_village.webp"
+        ),
+        Tower(
+            name: "Engineer Monkey",
+            category: Support,
+            icon: "towers/engineer_monkey.webp"
+        ),
+        Tower(
+            name: "Beast Handler",
+            category: Support,
+            icon: "towers/beast_handler.webp"
+        ),
     ],
     maps: [
         Map(
-            name: "Monkey Meadows",
-            icon: "./assets/maps/monkey_meadows.png"
+            name: "Monkey Meadow",
+            icon: "maps/monkey_meadow.webp"
+        ),
+        Map(
+            name: "Cubism",
+            icon: "maps/cubism.webp"
         )
     ],
     modes: [
         Mode(
             name: "Easy Standard",
-            icon: "./assets/modes/easy.png"
+            icon: "modes/easy_standard.webp"
+        ),
+        Mode(
+            name: "Primary Only",
+            icon: "modes/primary_only.webp"
         )
     ]
 )

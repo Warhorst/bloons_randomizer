@@ -16,13 +16,13 @@ impl BloonsConfig {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Hero {
     pub name: String,
     pub icon: String
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Tower {
     pub name: String,
     pub category: Category,
@@ -37,13 +37,13 @@ pub enum Category {
     Support
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Map {
     pub name: String,
     pub icon: String
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Mode {
     pub name: String,
     pub icon: String

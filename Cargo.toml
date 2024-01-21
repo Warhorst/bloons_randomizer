@@ -10,8 +10,9 @@ opt-level = 1
 opt-level = 3
 
 [dependencies]
-bevy = "0.12.1"
+bevy = { version = "0.12.1", features = ["webp"] }
 ron = "0.8.1"
 bevy_common_assets = { version = "0.9.0", features = ["ron"] }
 bevy-inspector-egui = "0.22.1"
 serde = { version = "1.0", features = ["derive"] }
+rand = "0.8.5"

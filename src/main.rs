@@ -6,6 +6,7 @@ use crate::run::RunPlugin;
 pub mod bloons_config;
 mod load;
 mod run;
+mod random_select;
 
 fn main() {
     App::new()
