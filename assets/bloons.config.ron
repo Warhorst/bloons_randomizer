@@ -1,13 +1,65 @@
 BloonsConfig(
     heroes: [
         Hero(
+            name: "Admiral Brickell",
+            icon: "heroes/admiral_brickell.webp"
+        ),
+        Hero(
+            name: "Adora",
+            icon: "heroes/adora.webp"
+        ),
+        Hero(
+            name: "Benjamin",
+            icon: "heroes/benjamin.webp"
+        ),
+        Hero(
+            name: "Captain Churchill",
+            icon: "heroes/captain_churchill.webp"
+        ),
+        Hero(
+            name: "Corvus",
+            icon: "heroes/corvus.webp"
+        ),
+        Hero(
+            name: "Etienne",
+            icon: "heroes/etienne.webp"
+        ),
+        Hero(
+            name: "Ezili",
+            icon: "heroes/ezili.webp"
+        ),
+        Hero(
+            name: "Geraldo",
+            icon: "heroes/geraldo.webp"
+        ),
+        Hero(
+            name: "Gwendolin",
+            icon: "heroes/gwendolin.webp"
+        ),
+        Hero(
+            name: "Obyn Green Foot",
+            icon: "heroes/obyn_green_foot.webp"
+        ),
+        Hero(
+            name: "Pat Fusty",
+            icon: "heroes/pat_fusty.webp"
+        ),
+        Hero(
+            name: "Psi",
+            icon: "heroes/psi.webp"
+        ),
+        Hero(
             name: "Quincy",
             icon: "heroes/quincy.webp"
         ),
         Hero(
             name: "Sauda",
             icon: "heroes/sauda.webp"
-        )
+        ),
+        Hero(
+            name: "Striker Jones",
+            icon: "heroes/striker_jones.webp"
+        ),
     ],
     towers: [
         Tower(
