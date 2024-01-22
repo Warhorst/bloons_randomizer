@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-// use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use crate::load::LoadPlugin;
 use crate::run::RunPlugin;
 
@@ -14,9 +13,9 @@ fn main() {
             .set(
                 WindowPlugin {
                     primary_window: Some(Window {
-                        resolution: (800.0, 640.0).into(),
-                        title: "bloons_randomizer".to_string(),
-                        resizable: false,
+                        resolution: (1600.0, 1000.0).into(),
+                        title: "Bloons Randomizer".to_string(),
+                        resizable: true,
                         ..default()
                     }),
                     ..default()
@@ -26,7 +25,6 @@ fn main() {
         )
         .add_state::<AppState>()
         .add_plugins((
-            // WorldInspectorPlugin::new(),
             LoadPlugin,
             RunPlugin
         ))

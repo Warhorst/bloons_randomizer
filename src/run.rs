@@ -91,7 +91,7 @@ fn process_randomize_pressed(
             spawn_selection_ui(
                 &mut commands,
                 &asset_server,
-                selection
+                selection,
             );
         }
     }
@@ -148,46 +148,35 @@ fn spawn_selection_ui(
     asset_server: &AssetServer,
     selection: Selection,
 ) {
-    commands.spawn((
-        SelectionUi,
-        NodeBundle {
-            style: Style {
-                width: Val::Px(800.0),
-                height: Val::Px(800.0),
-                top: Val::Px(200.0),
-                justify_content: JustifyContent::Start,
-                ..default()
-            },
-            ..default()
-        }
-    )).with_children(|parent| {
-        spawn_mode_ui(parent, asset_server, &selection.mode);
-        spawn_map_ui(parent, asset_server, &selection.map);
-        spawn_hero_ui(parent, asset_server, &selection.hero);
-        spawn_tower_ui(parent, asset_server, &selection.towers);
-    });
+    spawn_mode_ui(commands, asset_server, &selection.mode);
+    spawn_map_ui(commands, asset_server, &selection.map);
+    spawn_hero_ui(commands, asset_server, &selection.hero);
+    spawn_tower_ui(commands, asset_server, &selection.towers);
 }
 
 fn spawn_mode_ui(
-    parent: &mut ChildBuilder,
+    parent: &mut Commands,
     asset_server: &AssetServer,
     mode: &Mode,
 ) {
-    parent.spawn(NodeBundle {
-        style: Style {
-            width: Val::Percent(100.0),
-            height: Val::Percent(20.0),
-            justify_content: JustifyContent::Start,
-            position_type: Absolute,
+    parent.spawn((
+        SelectionUi,
+        NodeBundle {
+            style: Style {
+                width: Val::Percent(30.0),
+                height: Val::Percent(20.0),
+                top: Val::Percent(20.0),
+                justify_content: JustifyContent::Start,
+                position_type: Absolute,
+                ..default()
+            },
             ..default()
-        },
-        ..default()
-    }).with_children(|parent| {
+        })).with_children(|parent| {
         parent.spawn((
             NodeBundle {
                 style: Style {
-                    width: Val::Px(100.0),
-                    height: Val::Px(100.0),
+                    width: Val::Percent(20.0),
+                    height: Val::Percent(50.0),
                     position_type: Absolute,
                     ..default()
                 },
@@ -201,8 +190,8 @@ fn spawn_mode_ui(
             NodeBundle {
                 style: Style {
                     width: Val::Percent(60.0),
-                    height: Val::Px(100.0),
-                    left: Val::Percent(40.0),
+                    height: Val::Px(50.0),
+                    left: Val::Percent(20.0),
                     position_type: Absolute,
                     ..default()
                 },
@@ -222,16 +211,17 @@ fn spawn_mode_ui(
 }
 
 fn spawn_map_ui(
-    parent: &mut ChildBuilder,
+    parent: &mut Commands,
     asset_server: &AssetServer,
-    map: &Map
+    map: &Map,
 ) {
     parent.spawn((
+        SelectionUi,
         NodeBundle {
             style: Style {
-                width: Val::Px(100.0),
-                height: Val::Px(100.0),
-                top: Val::Percent(20.0),
+                width: Val::Percent(25.0),
+                height: Val::Percent(30.0),
+                top: Val::Percent(30.0),
                 ..default()
             },
             background_color: Color::WHITE.into(),
@@ -242,15 +232,16 @@ fn spawn_map_ui(
 }
 
 fn spawn_hero_ui(
-    parent: &mut ChildBuilder,
+    parent: &mut Commands,
     asset_server: &AssetServer,
-    hero: &Hero
+    hero: &Hero,
 ) {
     parent.spawn((
+        SelectionUi,
         NodeBundle {
             style: Style {
-                width: Val::Px(100.0),
-                height: Val::Px(100.0),
+                width: Val::Percent(7.5),
+                height: Val::Percent(15.0),
                 top: Val::Percent(60.0),
                 ..default()
             },
@@ -262,18 +253,19 @@ fn spawn_hero_ui(
 }
 
 fn spawn_tower_ui(
-    parent: &mut ChildBuilder,
+    parent: &mut Commands,
     asset_server: &AssetServer,
-    towers: &[Tower]
+    towers: &[Tower],
 ) {
     for (i, tower) in towers.iter().enumerate() {
         parent.spawn((
+            SelectionUi,
             NodeBundle {
                 style: Style {
-                    width: Val::Px(100.0),
-                    height: Val::Px(100.0),
+                    width: Val::Percent(7.5),
+                    height: Val::Percent(15.0),
                     top: Val::Percent(80.0),
-                    left: Val::Px(50.0 * i as f32 ),
+                    left: Val::Percent(7.5 * i as f32),
                     ..default()
                 },
                 background_color: Color::WHITE.into(),
@@ -297,8 +289,8 @@ fn spawn_settings_ui(
     commands
         .spawn(NodeBundle {
             style: Style {
-                width: Val::Px(700.0),
-                height: Val::Px(200.0),
+                width: Val::Percent(45.0),
+                height: Val::Percent(20.0),
                 justify_content: JustifyContent::Start,
                 ..default()
             },
