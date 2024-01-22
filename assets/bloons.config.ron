@@ -175,13 +175,289 @@ BloonsConfig(
     ],
     maps: [
         Map(
-            name: "Monkey Meadow",
-            icon: "maps/monkey_meadow.webp"
+            name: "Adoras Temple",
+            icon: "maps/adoras_temple.webp"
+        ),
+        Map(
+            name: "Alpine Run",
+            icon: "maps/alpine_run.webp"
+        ),
+        Map(
+            name: "Another Brick",
+            icon: "maps/another_brick.webp"
+        ),
+        Map(
+            name: "Balance",
+            icon: "maps/balance.webp"
+        ),
+        Map(
+            name: "Bazaar.PNG",
+            icon: "maps/bazaar.PNG.webp"
+        ),
+        Map(
+            name: "Bloody Puddles",
+            icon: "maps/bloody_puddles.webp"
+        ),
+        Map(
+            name: "Bloonarius Prime",
+            icon: "maps/bloonarius_prime.webp"
+        ),
+        Map(
+            name: "Candy Falls",
+            icon: "maps/candy_falls.webp"
+        ),
+        Map(
+            name: "Cargo",
+            icon: "maps/cargo.webp"
+        ),
+        Map(
+            name: "Cark Dungeons",
+            icon: "maps/cark_dungeons.webp"
+        ),
+        Map(
+            name: "Carved",
+            icon: "maps/carved.webp"
+        ),
+        Map(
+            name: "Chutes",
+            icon: "maps/chutes.webp"
+        ),
+        Map(
+            name: "Cornfield",
+            icon: "maps/cornfield.webp"
+        ),
+        Map(
+            name: "Covered Garden",
+            icon: "maps/covered_garden.webp"
+        ),
+        Map(
+            name: "Cracked",
+            icon: "maps/cracked.webp"
         ),
         Map(
             name: "Cubism",
             icon: "maps/cubism.webp"
-        )
+        ),
+        Map(
+            name: "Dark Castle",
+            icon: "maps/dark_castle.webp"
+        ),
+        Map(
+            name: "Dark Path",
+            icon: "maps/dark_path.webp"
+        ),
+        Map(
+            name: "Dour Circles",
+            icon: "maps/dour_circles.webp"
+        ),
+        Map(
+            name: "Downstream",
+            icon: "maps/downstream.webp"
+        ),
+        Map(
+            name: "Encrypted",
+            icon: "maps/encrypted.webp"
+        ),
+        Map(
+            name: "End Of The Eoad",
+            icon: "maps/end_of_the_eoad.webp"
+        ),
+        Map(
+            name: "Erosion",
+            icon: "maps/erosion.webp"
+        ),
+        Map(
+            name: "Firing Range",
+            icon: "maps/firing_range.webp"
+        ),
+        Map(
+            name: "Flooded Valley",
+            icon: "maps/flooded_valley.webp"
+        ),
+        Map(
+            name: "Frozen Over",
+            icon: "maps/frozen_over.webp"
+        ),
+        Map(
+            name: "Geared",
+            icon: "maps/geared.webp"
+        ),
+        Map(
+            name: "Glacial Trail",
+            icon: "maps/glacial_trail.webp"
+        ),
+        Map(
+            name: "Haunted",
+            icon: "maps/haunted.webp"
+        ),
+        Map(
+            name: "Hedge",
+            icon: "maps/hedge.webp"
+        ),
+        Map(
+            name: "High Finance",
+            icon: "maps/high_finance.webp"
+        ),
+        Map(
+            name: "Infernal",
+            icon: "maps/infernal.webp"
+        ),
+        Map(
+            name: "In The Loop",
+            icon: "maps/in_the_loop.webp"
+        ),
+        Map(
+            name: "Karts And Darts",
+            icon: "maps/karts_and_darts.webp"
+        ),
+        Map(
+            name: "Logs",
+            icon: "maps/logs.webp"
+        ),
+        Map(
+            name: "Lotus Island",
+            icon: "maps/lotus_island.webp"
+        ),
+        Map(
+            name: "Mesa",
+            icon: "maps/mesa.webp"
+        ),
+        Map(
+            name: "Middle Of The Road",
+            icon: "maps/middle_of_the_road.webp"
+        ),
+        Map(
+            name: "Midnight Mansion",
+            icon: "maps/midnight_mansion.webp"
+        ),
+        Map(
+            name: "Monkey Meadow",
+            icon: "maps/monkey_meadow.webp"
+        ),
+        Map(
+            name: "Moon Landing",
+            icon: "maps/moon_landing.webp"
+        ),
+        Map(
+            name: "Muddy Puddles",
+            icon: "maps/muddy_puddles.webp"
+        ),
+        Map(
+            name: "Off The Coast",
+            icon: "maps/off_the_coast.webp"
+        ),
+        Map(
+            name: "One Two Tree",
+            icon: "maps/one_two_tree.webp"
+        ),
+        Map(
+            name: "Ouch",
+            icon: "maps/ouch.webp"
+        ),
+        Map(
+            name: "Park Path",
+            icon: "maps/park_path.webp"
+        ),
+        Map(
+            name: "Pats Pond",
+            icon: "maps/pats_pond.webp"
+        ),
+        Map(
+            name: "Peninsula",
+            icon: "maps/peninsula.webp"
+        ),
+        Map(
+            name: "Polyphemus",
+            icon: "maps/polyphemus.webp"
+        ),
+        Map(
+            name: "Quad",
+            icon: "maps/quad.webp"
+        ),
+        Map(
+            name: "Quarry",
+            icon: "maps/quarry.webp"
+        ),
+        Map(
+            name: "Quiet Street",
+            icon: "maps/quiet_street.webp"
+        ),
+        Map(
+            name: "Rake",
+            icon: "maps/rake.webp"
+        ),
+        Map(
+            name: "Ravine",
+            icon: "maps/ravine.webp"
+        ),
+        Map(
+            name: "Resort",
+            icon: "maps/resort.webp"
+        ),
+        Map(
+            name: "Sanctuary",
+            icon: "maps/sanctuary.webp"
+        ),
+        Map(
+            name: "Scrapyard",
+            icon: "maps/scrapyard.webp"
+        ),
+        Map(
+            name: "Skates",
+            icon: "maps/skates.webp"
+        ),
+        Map(
+            name: "Spice Islands",
+            icon: "maps/spice_islands.webp"
+        ),
+        Map(
+            name: "Spillway",
+            icon: "maps/spillway.webp"
+        ),
+        Map(
+            name: "Spring Spring",
+            icon: "maps/spring_spring.webp"
+        ),
+        Map(
+            name: "Streambed",
+            icon: "maps/streambed.webp"
+        ),
+        Map(
+            name: "Sunken Columns",
+            icon: "maps/sunken_columns.webp"
+        ),
+        Map(
+            name: "The Cabin",
+            icon: "maps/the_cabin.webp"
+        ),
+        Map(
+            name: "Town Center",
+            icon: "maps/town_center.webp"
+        ),
+        Map(
+            name: "Tree Stump",
+            icon: "maps/tree_stump.webp"
+        ),
+        Map(
+            name: "Underground",
+            icon: "maps/underground.webp"
+        ),
+        Map(
+            name: "Water Park",
+            icon: "maps/water_park.webp"
+        ),
+        Map(
+            name: "Winter Park",
+            icon: "maps/winter_park.webp"
+        ),
+        Map(
+            name: "Workshop",
+            icon: "maps/workshop.webp"
+        ),
+        Map(
+            name: "X Factor",
+            icon: "maps/x_factor.webp"
+        ),
     ],
     modes: [
         Mode(

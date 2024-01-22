@@ -48,9 +48,3 @@ pub struct Selection {
     pub hero: Hero,
     pub towers: Vec<Tower>
 }
-
-impl Selection {
-    pub fn new(mode: Mode, map: Map, hero: Hero, towers: Vec<Tower>) -> Self {
-        Self { mode, map, hero, towers }
-    }
-}
