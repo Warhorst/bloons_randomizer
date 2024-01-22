@@ -139,6 +139,54 @@ BloonsConfig(
         Mode(
             name: "Primary Only",
             icon: "modes/primary_only.webp"
-        )
+        ),
+        Mode(
+            name: "Deflation",
+            icon: "modes/deflation.webp"
+        ),
+        Mode(
+            name: "Medium Standard",
+            icon: "modes/medium_standard.webp"
+        ),
+        Mode(
+            name: "Military Only",
+            icon: "modes/military_only.webp"
+        ),
+        Mode(
+            name: "Reverse",
+            icon: "modes/reverse.webp"
+        ),
+        Mode(
+            name: "Apopalypse",
+            icon: "modes/apopalypse.webp"
+        ),
+        Mode(
+            name: "Hard Standard",
+            icon: "modes/hard_standard.webp"
+        ),
+        Mode(
+            name: "Magic Only",
+            icon: "modes/magic_only.webp"
+        ),
+        Mode(
+            name: "Double HP Moabs",
+            icon: "modes/double_hp_moabs.webp"
+        ),
+        Mode(
+            name: "Half Cash",
+            icon: "modes/half_cash.webp"
+        ),
+        Mode(
+            name: "Alternate Bloon Rounds",
+            icon: "modes/alternate_bloon_rounds.webp"
+        ),
+        Mode(
+            name: "Impoppable",
+            icon: "modes/impoppable.webp"
+        ),
+        Mode(
+            name: "C.H.I.M.P.S.",
+            icon: "modes/chimps.webp"
+        ),
     ]
 )
