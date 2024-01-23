@@ -13,7 +13,7 @@ fn main() {
             .set(
                 WindowPlugin {
                     primary_window: Some(Window {
-                        resolution: (1600.0, 1000.0).into(),
+                        resolution: (1400.0, 900.0).into(),
                         title: "Bloons Randomizer".to_string(),
                         resizable: true,
                         ..default()
