@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+use bevy_asset_preload::{AssetPreloadPlugin, load_assets};
+use crate::AppState::{Load, Run};
 use crate::load::LoadPlugin;
 use crate::run::RunPlugin;
 
@@ -25,6 +27,7 @@ fn main() {
         )
         .add_state::<AppState>()
         .add_plugins((
+            AssetPreloadPlugin::load_given_paths(Load, Run, load_assets!()),
             LoadPlugin,
             RunPlugin
         ))

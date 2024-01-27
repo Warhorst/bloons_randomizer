@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use serde::Deserialize;
 
 /// Every setting which will be taken in consideration when randomizing.
-#[derive(Resource, Asset, TypePath, Deserialize)]
+#[derive(Resource, Asset, TypePath, Deserialize, Clone)]
 pub struct BloonsConfig {
     pub heroes: Vec<Hero>,
     pub towers: Vec<Tower>,
