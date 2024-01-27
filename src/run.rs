@@ -13,10 +13,7 @@ impl Plugin for RunPlugin {
             .init_resource::<Settings>()
             .add_systems(
                 OnEnter(Run),
-                (
-                    spawn_camera,
-                    spawn_settings_ui
-                ),
+                spawn_settings_ui,
             )
             .add_systems(
                 Update,
@@ -274,12 +271,6 @@ fn spawn_tower_ui(
             UiImage::new(asset_server.load(tower.icon.clone())),
         ));
     }
-}
-
-fn spawn_camera(
-    mut commands: Commands
-) {
-    commands.spawn(Camera2dBundle::default());
 }
 
 fn spawn_settings_ui(

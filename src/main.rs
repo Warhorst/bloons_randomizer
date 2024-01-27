@@ -31,6 +31,10 @@ fn main() {
             LoadPlugin,
             RunPlugin
         ))
+        .add_systems(
+            Startup,
+            spawn_camera
+        )
         .run()
     ;
 }
@@ -40,4 +44,10 @@ pub enum AppState {
     #[default]
     Load,
     Run,
+}
+
+fn spawn_camera(
+    mut commands: Commands
+) {
+    commands.spawn(Camera2dBundle::default());
 }
