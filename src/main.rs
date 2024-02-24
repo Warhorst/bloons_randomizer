@@ -1,53 +1,54 @@
-use bevy::prelude::*;
-use bevy_asset_preload::{AssetPreloadPlugin, load_assets};
-use crate::AppState::{Load, Run};
-use crate::load::LoadPlugin;
-use crate::run::RunPlugin;
+fn main() -> Result<(), eframe::Error> {
+    let options = eframe::NativeOptions {
+        viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 240.0]),
+        ..Default::default()
+    };
+    eframe::run_native(
+        "My egui App",
+        options,
+        Box::new(|cc| {
+            // This gives us image support:
+            egui_extras::install_image_loaders(&cc.egui_ctx);
 
-pub mod bloons_config;
-mod load;
-mod run;
-mod random_select;
+            Box::<MyApp>::default()
+        }),
+    )
+}
 
-fn main() {
-    App::new()
-        .add_plugins(DefaultPlugins
-            .set(
-                WindowPlugin {
-                    primary_window: Some(Window {
-                        resolution: (1400.0, 900.0).into(),
-                        title: "Bloons Randomizer".to_string(),
-                        resizable: true,
-                        ..default()
-                    }),
-                    ..default()
+struct MyApp {
+    name: String,
+    age: u32,
+}
+
+impl Default for MyApp {
+    fn default() -> Self {
+        Self {
+            name: "Arthur".to_owned(),
+            age: 42,
+        }
+    }
+}
+
+impl eframe::App for MyApp {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("My egui Application");
+            ui.horizontal(|ui| {
+                let name_label = ui.label("Your name: ");
+                ui.text_edit_singleline(&mut self.name)
+                    .labelled_by(name_label.id);
+            });
+            ui.add(egui::Slider::new(&mut self.age, 0..=120).text("age"));
+
+            if self.age >= 42 {
+                if ui.button("Increment").clicked() {
+                    self.age += 1;
                 }
-            )
-            .set(ImagePlugin::default_nearest())
-        )
-        .add_state::<AppState>()
-        .add_plugins((
-            AssetPreloadPlugin::load_given_paths(Load, Run, load_assets!()),
-            LoadPlugin,
-            RunPlugin
-        ))
-        .add_systems(
-            Startup,
-            spawn_camera
-        )
-        .run()
-    ;
-}
+            }
 
-#[derive(States, Debug, Default, Clone, Eq, PartialEq, Hash)]
-pub enum AppState {
-    #[default]
-    Load,
-    Run,
-}
+            ui.label(format!("Hello '{}', age {}", self.name, self.age));
 
-fn spawn_camera(
-    mut commands: Commands
-) {
-    commands.spawn(Camera2dBundle::default());
+            ui.image("file://assets/heroes/sauda.webp");
+        });
+    }
 }
