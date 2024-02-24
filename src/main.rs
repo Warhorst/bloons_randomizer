@@ -1,5 +1,5 @@
 use eframe::{App, Error, Frame, run_native};
-use egui::{CentralPanel, Context, Grid};
+use egui::{CentralPanel, Context, Grid, Image, Vec2};
 use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -114,9 +114,8 @@ impl App for BloonsRandomizerApp {
                 ui.image(format!("file://assets/{}", selection.mode.icon));
                 ui.label(&selection.mode.name);
             });
-            ui.image(format!("file://assets/{}", selection.map.icon));
-            ui.image(format!("file://assets/{}", selection.hero.icon));
-
+            ui.add(Image::new(format!("file://assets/{}", selection.map.icon)).max_size(Vec2::new(200.0, 100.0)));
+            ui.add(Image::new(format!("file://assets/{}", selection.hero.icon)).max_size(Vec2::new(100.0, 50.0)));
             Grid::new("grid").show(ui, |ui| {
                 selection.towers
                     .iter()
