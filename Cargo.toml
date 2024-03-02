@@ -17,3 +17,9 @@ eframe = "0.26.2"
 egui = "0.26.2"
 egui_extras = { version = "0.26.2", features = ["all_loaders"] }
 image = { version = "0.24.9", features = ["webp"]}
+include_images = {path = "include_images" }
+
+[workspace]
+members = [
+    "include_images"
+]

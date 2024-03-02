@@ -1,12 +1,21 @@
 use serde::Deserialize;
 
 /// Every setting which will be taken in consideration when randomizing.
-#[derive(Deserialize, Clone, Default)]
+#[derive(Deserialize, Clone)]
 pub struct BloonsConfig {
     pub heroes: Vec<Hero>,
     pub towers: Vec<Tower>,
     pub maps: Vec<Map>,
     pub modes: Vec<Mode>
+}
+
+impl Default for BloonsConfig {
+    /// Include the config file in the binary and parse it
+    fn default() -> Self {
+        let bytes = include_bytes!("../assets/bloons.config.ron").to_vec();
+        let config_string = String::from_utf8(bytes).expect("config should be valid UTF8");
+        ron::from_str::<BloonsConfig>(&config_string).expect("the config should be valid RON")
+    }
 }
 
 impl BloonsConfig {

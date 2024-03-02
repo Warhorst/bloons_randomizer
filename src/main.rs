@@ -6,12 +6,14 @@ use rand::thread_rng;
 
 use crate::bloons_config::{BloonsConfig, Category, Tower};
 use crate::bloons_config::Category::*;
+use crate::images::Images;
 use crate::selection::Selection;
 use crate::settings::Settings;
 
 mod bloons_config;
 mod settings;
 mod selection;
+mod images;
 
 fn main() -> Result<(), Error> {
     let options = eframe::NativeOptions {
@@ -19,33 +21,25 @@ fn main() -> Result<(), Error> {
         ..Default::default()
     };
 
-    let bloons_config = ron::from_str::<BloonsConfig>(std::fs::read_to_string("./assets/bloons.config.ron").unwrap().as_str()).unwrap();
-
     run_native(
         "Bloons Randomizer",
         options,
         Box::new(|cc| {
             egui_extras::install_image_loaders(&cc.egui_ctx);
-            Box::new(BloonsRandomizerApp::new(bloons_config))
+            Box::<BloonsRandomizerApp<'_>>::default()
         }),
     )
 }
 
 #[derive(Default)]
-struct BloonsRandomizerApp {
+struct BloonsRandomizerApp<'a> {
     bloons_config: BloonsConfig,
+    images: Images<'a>,
     settings: Settings,
     selection: Option<Selection>,
 }
 
-impl BloonsRandomizerApp {
-    fn new(bloons_config: BloonsConfig) -> Self {
-        BloonsRandomizerApp {
-            bloons_config,
-            ..Default::default()
-        }
-    }
-
+impl<'a> BloonsRandomizerApp<'a> {
     pub fn random_select(&mut self) {
         let mut rng = thread_rng();
 
@@ -80,7 +74,7 @@ impl BloonsRandomizerApp {
     }
 }
 
-impl App for BloonsRandomizerApp {
+impl<'a> App for BloonsRandomizerApp<'a> {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         CentralPanel::default().show(ctx, |ui| {
             ui.heading("Bloons Randomizer");
@@ -111,17 +105,17 @@ impl App for BloonsRandomizerApp {
             };
 
             ui.horizontal(|ui| {
-                ui.image(format!("file://assets/{}", selection.mode.icon));
+                ui.image(self.images.get_image(&selection.mode.icon));
                 ui.label(&selection.mode.name);
             });
-            ui.add(Image::new(format!("file://assets/{}", selection.map.icon)).max_size(Vec2::new(200.0, 100.0)));
-            ui.add(Image::new(format!("file://assets/{}", selection.hero.icon)).max_size(Vec2::new(100.0, 50.0)));
+            ui.add(Image::new(self.images.get_image(&selection.map.icon)).max_size(Vec2::new(200.0, 100.0)));
+            ui.add(Image::new(self.images.get_image(&selection.hero.icon)).max_size(Vec2::new(100.0, 50.0)));
             Grid::new("grid").show(ui, |ui| {
                 selection.towers
                     .iter()
                     .enumerate()
                     .for_each(|(i, tower)| {
-                        ui.image(format!("file://assets/{}", tower.icon));
+                        ui.image(self.images.get_image(&tower.icon));
                         if (i + 1) % 4 == 0 {
                             ui.end_row();
                         }
