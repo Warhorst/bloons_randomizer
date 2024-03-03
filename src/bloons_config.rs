@@ -28,7 +28,7 @@ impl BloonsConfig {
     }
 }
 
-#[derive(Deserialize, Clone, Default)]
+#[derive(Deserialize, Clone, Default, Eq, PartialEq, Hash)]
 pub struct Hero {
     pub name: String,
     pub icon: String

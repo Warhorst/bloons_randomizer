@@ -1,5 +1,5 @@
-use eframe::{App, Error, Frame, run_native};
-use egui::{CentralPanel, Context, Grid, Image, Vec2};
+use eframe::{App, Error, Frame, run_native, Theme};
+use egui::{CentralPanel, Color32, Context, Grid, Image, ImageButton, Vec2};
 use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -18,15 +18,26 @@ mod images;
 fn main() -> Result<(), Error> {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default().with_fullscreen(true),
+        follow_system_theme: false,
+        default_theme: Theme::Dark,
         ..Default::default()
     };
+
+    let bloons_config = BloonsConfig::default();
+    let images = Images::default();
+    let settings = Settings::new(&bloons_config);
 
     run_native(
         "Bloons Randomizer",
         options,
         Box::new(|cc| {
             egui_extras::install_image_loaders(&cc.egui_ctx);
-            Box::<BloonsRandomizerApp<'_>>::default()
+            Box::<BloonsRandomizerApp<'_>>::new(BloonsRandomizerApp {
+                bloons_config,
+                images,
+                settings,
+                selection: None,
+            })
         }),
     )
 }
@@ -40,12 +51,16 @@ struct BloonsRandomizerApp<'a> {
 }
 
 impl<'a> BloonsRandomizerApp<'a> {
+    const HERO_SELECTED_COLOR: Color32 = Color32::WHITE;
+    const HERO_UNSELECTED_COLOR: Color32 = Color32::DARK_GRAY;
+
     pub fn random_select(&mut self) {
         let mut rng = thread_rng();
 
         let mode = self.bloons_config.modes.choose(&mut rng).expect("at least one mode should exist").clone();
         let map = self.bloons_config.maps.choose(&mut rng).expect("at least one map should exist").clone();
-        let hero = self.bloons_config.heroes.choose(&mut rng).expect("at least one hero should exist").clone();
+        // TODO wtf
+        let hero = self.settings.active_heroes.iter().collect::<Vec<_>>().choose(&mut rng).cloned().cloned();
         let towers = [
             self.choose_towers(&mut rng, Primary),
             self.choose_towers(&mut rng, Military),
@@ -81,21 +96,48 @@ impl<'a> App for BloonsRandomizerApp<'a> {
 
             egui::ScrollArea::vertical().show(ui, |ui| {
                 ui.heading("Bloons Randomizer");
-                ui.horizontal(|ui| {
+
+                Grid::new("monkey amount sliders").show(ui, |ui| {
                     ui.label("Primary: ");
                     ui.add(egui::Slider::new(&mut self.settings.num_primary, 0..=self.bloons_config.num_towers_of_category(Primary)));
-                });
-                ui.horizontal(|ui| {
+                    ui.end_row();
                     ui.label("Military: ");
                     ui.add(egui::Slider::new(&mut self.settings.num_military, 0..=self.bloons_config.num_towers_of_category(Military)));
-                });
-                ui.horizontal(|ui| {
+                    ui.end_row();
                     ui.label("Magic: ");
                     ui.add(egui::Slider::new(&mut self.settings.num_magic, 0..=self.bloons_config.num_towers_of_category(Magic)));
-                });
-                ui.horizontal(|ui| {
+                    ui.end_row();
                     ui.label("Support: ");
                     ui.add(egui::Slider::new(&mut self.settings.num_support, 0..=self.bloons_config.num_towers_of_category(Support)));
+                });
+
+                ui.collapsing("Include/Exclude Heroes", |ui| {
+                    Grid::new("hero include exclude").show(ui, |ui| {
+                        self.bloons_config.heroes
+                            .iter()
+                            .enumerate()
+                            .for_each(|(i, hero)| {
+                                let currently_selected = self.settings.active_heroes.contains(hero);
+                                let tint = match currently_selected {
+                                    true => Self::HERO_SELECTED_COLOR,
+                                    false => Self::HERO_UNSELECTED_COLOR
+                                };
+
+                                if ui.add_sized(
+                                    [50.0, 50.0],
+                                    ImageButton::new(self.images.get_image(&hero.icon)).tint(tint),
+                                ).clicked() {
+                                    match currently_selected {
+                                        true => { self.settings.active_heroes.remove(hero); }
+                                        false => { self.settings.active_heroes.insert(hero.clone()); }
+                                    }
+                                }
+
+                                if (i + 1) % 5 == 0 {
+                                    ui.end_row();
+                                }
+                            })
+                    });
                 });
 
                 if ui.button("Randomize").clicked() {
@@ -112,8 +154,12 @@ impl<'a> App for BloonsRandomizerApp<'a> {
                     ui.label(&selection.mode.name);
                 });
                 ui.add(Image::new(self.images.get_image(&selection.map.icon)).max_size(Vec2::new(300.0, 200.0)));
-                ui.add(Image::new(self.images.get_image(&selection.hero.icon)).max_size(Vec2::new(200.0, 100.0)));
-                Grid::new("grid").show(ui, |ui| {
+
+                if let Some(hero) = &selection.hero {
+                    ui.add(Image::new(self.images.get_image(&hero.icon)).max_size(Vec2::new(200.0, 100.0)));
+                }
+
+                Grid::new("monkey selection").show(ui, |ui| {
                     selection.towers
                         .iter()
                         .enumerate()
