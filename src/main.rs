@@ -1,4 +1,4 @@
-use eframe::{App, Error, Frame, run_native, Theme};
+use eframe::{App, Frame, Theme};
 use egui::{CentralPanel, Color32, Context, Grid, Image, ImageButton, Vec2};
 use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
@@ -15,7 +15,8 @@ mod settings;
 mod selection;
 mod images;
 
-fn main() -> Result<(), Error> {
+#[cfg(not(target_arch = "wasm32"))]
+fn main() -> Result<(), eframe::Error> {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default().with_fullscreen(true),
         follow_system_theme: false,
@@ -27,7 +28,7 @@ fn main() -> Result<(), Error> {
     let images = Images::default();
     let settings = Settings::new(&bloons_config);
 
-    run_native(
+    eframe::run_native(
         "Bloons Randomizer",
         options,
         Box::new(|cc| {
@@ -40,6 +41,38 @@ fn main() -> Result<(), Error> {
             })
         }),
     )
+}
+
+#[cfg(target_arch = "wasm32")]
+fn main() {
+    let options = eframe::WebOptions {
+        follow_system_theme: false,
+        default_theme: Theme::Dark,
+        ..Default::default()
+    };
+
+    let bloons_config = BloonsConfig::default();
+    let images = Images::default();
+    let settings = Settings::new(&bloons_config);
+
+    wasm_bindgen_futures::spawn_local(async {
+        eframe::WebRunner::new()
+            .start(
+                "the_canvas_id", // hardcode it
+                options,
+                Box::new(|cc| {
+                    egui_extras::install_image_loaders(&cc.egui_ctx);
+                    Box::<BloonsRandomizerApp<'_>>::new(BloonsRandomizerApp {
+                        bloons_config,
+                        images,
+                        settings,
+                        selection: None,
+                    })
+                }),
+            )
+            .await
+            .expect("failed to start eframe");
+    });
 }
 
 #[derive(Default)]
@@ -91,8 +124,9 @@ impl<'a> BloonsRandomizerApp<'a> {
 
 impl<'a> App for BloonsRandomizerApp<'a> {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
+        // TODO does not work, but is super small
+        // ctx.set_pixels_per_point(1.5);
         CentralPanel::default().show(ctx, |ui| {
-            ctx.set_pixels_per_point(1.5);
 
             egui::ScrollArea::vertical().show(ui, |ui| {
                 ui.heading("Bloons Randomizer");
