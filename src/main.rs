@@ -1,5 +1,6 @@
 use eframe::{App, Frame, Theme};
-use egui::{CentralPanel, Color32, Context, Grid, Image, ImageButton, Vec2};
+use eframe::epaint::FontFamily;
+use egui::{CentralPanel, Color32, Context, FontId, Grid, Image, ImageButton, ScrollArea, TextStyle, Vec2};
 use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -124,14 +125,29 @@ impl<'a> BloonsRandomizerApp<'a> {
 
 impl<'a> App for BloonsRandomizerApp<'a> {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
-        // TODO does not work, but is super small
-        // ctx.set_pixels_per_point(1.5);
         CentralPanel::default().show(ctx, |ui| {
+            ScrollArea::vertical().show(ui, |ui| {
+                ui.style_mut().text_styles.insert(
+                    TextStyle::Heading,
+                    FontId::new(36.0, FontFamily::Proportional)
+                );
+                ui.style_mut().text_styles.insert(
+                    TextStyle::Body,
+                    FontId::new(24.0, FontFamily::Proportional)
+                );
+                ui.style_mut().text_styles.insert(
+                    TextStyle::Button,
+                    FontId::new(24.0, FontFamily::Proportional)
+                );
 
-            egui::ScrollArea::vertical().show(ui, |ui| {
                 ui.heading("Bloons Randomizer");
 
                 Grid::new("monkey amount sliders").show(ui, |ui| {
+                    ui.style_mut().text_styles.insert(
+                        TextStyle::Body,
+                        FontId::new(24.0, FontFamily::Proportional)
+                    );
+
                     ui.label("Primary: ");
                     ui.add(egui::Slider::new(&mut self.settings.num_primary, 0..=self.bloons_config.num_towers_of_category(Primary)));
                     ui.end_row();
@@ -158,7 +174,7 @@ impl<'a> App for BloonsRandomizerApp<'a> {
                                 };
 
                                 if ui.add_sized(
-                                    [50.0, 50.0],
+                                    [75.0, 75.0],
                                     ImageButton::new(self.images.get_image(&hero.icon)).tint(tint),
                                 ).clicked() {
                                     match currently_selected {
@@ -184,13 +200,13 @@ impl<'a> App for BloonsRandomizerApp<'a> {
                 };
 
                 ui.horizontal(|ui| {
-                    ui.add_sized([50.0, 50.0], Image::new(self.images.get_image(&selection.mode.icon)));
+                    ui.add_sized([75.0, 75.0], Image::new(self.images.get_image(&selection.mode.icon)));
                     ui.label(&selection.mode.name);
                 });
-                ui.add(Image::new(self.images.get_image(&selection.map.icon)).max_size(Vec2::new(300.0, 200.0)));
+                ui.add(Image::new(self.images.get_image(&selection.map.icon)).max_size(Vec2::new(450.0, 300.0)));
 
                 if let Some(hero) = &selection.hero {
-                    ui.add(Image::new(self.images.get_image(&hero.icon)).max_size(Vec2::new(200.0, 100.0)));
+                    ui.add(Image::new(self.images.get_image(&hero.icon)).max_size(Vec2::new(300.0, 150.0)));
                 }
 
                 Grid::new("monkey selection").show(ui, |ui| {
@@ -198,7 +214,7 @@ impl<'a> App for BloonsRandomizerApp<'a> {
                         .iter()
                         .enumerate()
                         .for_each(|(i, tower)| {
-                            ui.add_sized([50.0, 50.0], Image::new(self.images.get_image(&tower.icon)));
+                            ui.add_sized([75.0, 75.0], Image::new(self.images.get_image(&tower.icon)));
                             if (i + 1) % 5 == 0 {
                                 ui.end_row();
                             }

@@ -1,1 +1,1 @@
-basic-http-server ../bloons_randomizer_web/bloons_randomizer
+trunk serve
