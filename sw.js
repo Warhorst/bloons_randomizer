@@ -2,8 +2,8 @@ var cacheName = 'egui-template-pwa';
 var filesToCache = [
     './',
     './index.html',
-    './target/wasm_bloons_randomizer.js',
-    './target/wasm_bloons_randomizer.wasm',
+    './bloons_randomizer.js',
+    './bloons_randomizer.wasm',
 ];
 
 /* Start the service worker and cache all of the app's content */
