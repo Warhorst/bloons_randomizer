@@ -8,4 +8,6 @@ Cargo.lock
 *.pdb
 
 .idea
+
+# output of trunk
 dist/
