@@ -54,7 +54,7 @@ pub enum Category {
     Support
 }
 
-#[derive(Deserialize, Clone, Default)]
+#[derive(Deserialize, Clone, Default, Eq, PartialEq, Hash)]
 pub struct Map {
     pub name: String,
     pub icon: String

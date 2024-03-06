@@ -3,7 +3,7 @@ use crate::bloons_config::{Hero, Map, Mode, Tower};
 #[derive(Default)]
 pub struct Selection {
     pub mode: Option<Mode>,
-    pub map: Map,
+    pub map: Option<Map>,
     pub hero: Option<Hero>,
     pub towers: Vec<Tower>
 }

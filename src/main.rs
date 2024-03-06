@@ -93,7 +93,7 @@ impl<'a> BloonsRandomizerApp<'a> {
         let mut rng = thread_rng();
 
         let mode = self.settings.active_modes.iter().choose(&mut rng).cloned();
-        let map = self.bloons_config.maps.choose(&mut rng).expect("at least one map should exist").clone();
+        let map = self.settings.active_maps.iter().choose(&mut rng).cloned();
         let hero = self.settings.active_heroes.iter().choose(&mut rng).cloned();
         let towers = [
             self.choose_towers(&mut rng, Primary),
@@ -143,6 +143,7 @@ impl<'a> App for BloonsRandomizerApp<'a> {
                 ui.heading("Bloons Randomizer");
 
                 self.create_monkey_amount_sliders(ui);
+                self.create_include_exclude_maps_ui(ui);
                 self.create_include_exclude_modes_ui(ui);
                 self.create_include_exclude_heroes_ui(ui);
 
@@ -162,7 +163,9 @@ impl<'a> App for BloonsRandomizerApp<'a> {
                     });
                 }
 
-                ui.add(Image::new(self.images.get_image(&selection.map.icon)).max_size(Vec2::new(450.0, 300.0)));
+                if let Some(map) = &selection.map {
+                    ui.add(Image::new(self.images.get_image(&map.icon)).max_size(Vec2::new(450.0, 300.0)));
+                }
 
                 if let Some(hero) = &selection.hero {
                     ui.add(Image::new(self.images.get_image(&hero.icon)).max_size(Vec2::new(300.0, 150.0)));
@@ -208,7 +211,7 @@ impl<'a> BloonsRandomizerApp<'a> {
 
     fn create_include_exclude_modes_ui(&mut self, ui: &mut Ui) {
         ui.collapsing("Include/Exclude Modes", |ui| {
-            Grid::new("hero include exclude").show(ui, |ui| {
+            Grid::new("mode include exclude").show(ui, |ui| {
                 [Difficulty::Easy, Difficulty::Medium, Difficulty::Hard].into_iter()
                     .for_each(|d| {
                         self.bloons_config.get_modes_of_difficulty(d)
@@ -233,6 +236,37 @@ impl<'a> BloonsRandomizerApp<'a> {
 
                         ui.end_row();
                     });
+            });
+        });
+    }
+
+    fn create_include_exclude_maps_ui(&mut self, ui: &mut Ui) {
+        ui.collapsing("Include/Exclude Maps", |ui| {
+            Grid::new("map include exclude").show(ui, |ui| {
+                self.bloons_config.maps
+                    .iter()
+                    .enumerate()
+                    .for_each(|(i, map)| {
+                        let currently_selected = self.settings.active_maps.contains(map);
+                        let tint = match currently_selected {
+                            true => Self::SELECTED_COLOR,
+                            false => Self::UNSELECTED_COLOR
+                        };
+
+                        if ui.add_sized(
+                            [125.0, 100.0],
+                            ImageButton::new(self.images.get_image(&map.icon)).tint(tint),
+                        ).clicked() {
+                            match currently_selected {
+                                true => { self.settings.active_maps.remove(map); }
+                                false => { self.settings.active_maps.insert(map.clone()); }
+                            }
+                        }
+
+                        if (i + 1) % 5 == 0 {
+                            ui.end_row();
+                        }
+                    })
             });
         });
     }
