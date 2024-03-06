@@ -462,59 +462,73 @@ BloonsConfig(
     modes: [
         Mode(
             name: "Easy Standard",
-            icon: "modes/easy_standard.webp"
+            icon: "modes/easy_standard.webp",
+            difficulty: Easy
         ),
         Mode(
             name: "Primary Only",
-            icon: "modes/primary_only.webp"
+            icon: "modes/primary_only.webp",
+            difficulty: Easy
         ),
         Mode(
             name: "Deflation",
-            icon: "modes/deflation.webp"
+            icon: "modes/deflation.webp",
+            difficulty: Easy
         ),
         Mode(
             name: "Medium Standard",
-            icon: "modes/medium_standard.webp"
+            icon: "modes/medium_standard.webp",
+            difficulty: Medium
         ),
         Mode(
             name: "Military Only",
-            icon: "modes/military_only.webp"
+            icon: "modes/military_only.webp",
+            difficulty: Medium
         ),
         Mode(
             name: "Reverse",
-            icon: "modes/reverse.webp"
+            icon: "modes/reverse.webp",
+            difficulty: Medium
         ),
         Mode(
             name: "Apopalypse",
-            icon: "modes/apopalypse.webp"
+            icon: "modes/apopalypse.webp",
+            difficulty: Medium
         ),
         Mode(
             name: "Hard Standard",
-            icon: "modes/hard_standard.webp"
+            icon: "modes/hard_standard.webp",
+            difficulty: Hard
         ),
         Mode(
             name: "Magic Only",
-            icon: "modes/magic_only.webp"
+            icon: "modes/magic_only.webp",
+            difficulty: Hard
         ),
         Mode(
             name: "Double HP Moabs",
-            icon: "modes/double_hp_moabs.webp"
+            icon: "modes/double_hp_moabs.webp",
+            difficulty: Hard
         ),
         Mode(
             name: "Half Cash",
-            icon: "modes/half_cash.webp"
+            icon: "modes/half_cash.webp",
+            difficulty: Hard
         ),
         Mode(
             name: "Alternate Bloon Rounds",
-            icon: "modes/alternate_bloon_rounds.webp"
+            icon: "modes/alternate_bloon_rounds.webp",
+            difficulty: Hard
         ),
         Mode(
             name: "Impoppable",
-            icon: "modes/impoppable.webp"
+            icon: "modes/impoppable.webp",
+            difficulty: Hard
         ),
         Mode(
             name: "C.H.I.M.P.S.",
-            icon: "modes/chimps.webp"
+            icon: "modes/chimps.webp",
+            difficulty: Hard
         ),
     ]
 )

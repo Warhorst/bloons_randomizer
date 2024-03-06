@@ -26,6 +26,10 @@ impl BloonsConfig {
     pub fn num_towers_of_category(&self, category: Category) -> usize {
         self.get_towers_of_category(category).into_iter().count()
     }
+
+    pub fn get_modes_of_difficulty(&self, difficulty: Difficulty) -> impl IntoIterator<Item=&Mode> {
+        self.modes.iter().filter(move |m| m.difficulty == difficulty)
+    }
 }
 
 #[derive(Deserialize, Clone, Default, Eq, PartialEq, Hash)]
@@ -56,8 +60,17 @@ pub struct Map {
     pub icon: String
 }
 
-#[derive(Deserialize, Clone, Default)]
+#[derive(Deserialize, Clone, Default, Eq, PartialEq, Hash)]
 pub struct Mode {
     pub name: String,
-    pub icon: String
+    pub icon: String,
+    pub difficulty: Difficulty
+}
+
+#[derive(Deserialize, Copy, Clone, Default, Eq, PartialEq, Hash)]
+pub enum Difficulty {
+    #[default]
+    Easy,
+    Medium,
+    Hard
 }
