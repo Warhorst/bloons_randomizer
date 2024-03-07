@@ -6,8 +6,9 @@ use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 
-use crate::bloons_config::{BloonsConfig, Category, Difficulty, Tower};
+use crate::bloons_config::{BloonsConfig, Category, Tower};
 use crate::bloons_config::Category::*;
+use crate::bloons_config::Difficulty::*;
 use crate::images::Images;
 use crate::selection::Selection;
 use crate::settings::Settings;
@@ -115,9 +116,9 @@ impl<'a> BloonsRandomizerApp<'a> {
         rng: &mut ThreadRng,
         category: Category,
     ) -> Vec<Tower> {
-        let towers = self.bloons_config.get_towers_of_category(category).into_iter().collect::<Vec<_>>();
+        let towers = self.settings.active_towers.iter().filter(|t| t.category == category).collect::<Vec<_>>();
         towers
-            .choose_multiple(rng, self.settings.get_amount(category) as usize)
+            .choose_multiple(rng, self.settings.get_amount(category))
             .map(|t| (*t).clone())
             .collect()
     }
@@ -129,23 +130,24 @@ impl<'a> App for BloonsRandomizerApp<'a> {
             ScrollArea::vertical().show(ui, |ui| {
                 ui.style_mut().text_styles.insert(
                     TextStyle::Heading,
-                    FontId::new(36.0, FontFamily::Proportional)
+                    FontId::new(36.0, FontFamily::Proportional),
                 );
                 ui.style_mut().text_styles.insert(
                     TextStyle::Body,
-                    FontId::new(24.0, FontFamily::Proportional)
+                    FontId::new(24.0, FontFamily::Proportional),
                 );
                 ui.style_mut().text_styles.insert(
                     TextStyle::Button,
-                    FontId::new(24.0, FontFamily::Proportional)
+                    FontId::new(24.0, FontFamily::Proportional),
                 );
 
                 ui.heading("Bloons Randomizer");
 
                 self.create_monkey_amount_sliders(ui);
-                self.create_include_exclude_maps_ui(ui);
                 self.create_include_exclude_modes_ui(ui);
+                self.create_include_exclude_maps_ui(ui);
                 self.create_include_exclude_heroes_ui(ui);
+                self.create_include_exclude_towers_ui(ui);
 
                 if ui.button("Randomize").clicked() {
                     self.random_select();
@@ -192,27 +194,31 @@ impl<'a> BloonsRandomizerApp<'a> {
         Grid::new("monkey amount sliders").show(ui, |ui| {
             ui.style_mut().text_styles.insert(
                 TextStyle::Body,
-                FontId::new(24.0, FontFamily::Proportional)
+                FontId::new(24.0, FontFamily::Proportional),
             );
 
             ui.label("Primary: ");
-            ui.add(egui::Slider::new(&mut self.settings.num_primary, 0..=self.bloons_config.num_towers_of_category(Primary)));
+            let max_primary = self.settings.get_max(Primary);
+            ui.add(egui::Slider::new(&mut self.settings.num_primary, 0..=max_primary));
             ui.end_row();
             ui.label("Military: ");
-            ui.add(egui::Slider::new(&mut self.settings.num_military, 0..=self.bloons_config.num_towers_of_category(Military)));
+            let max_military = self.settings.get_max(Military);
+            ui.add(egui::Slider::new(&mut self.settings.num_military, 0..=max_military));
             ui.end_row();
             ui.label("Magic: ");
-            ui.add(egui::Slider::new(&mut self.settings.num_magic, 0..=self.bloons_config.num_towers_of_category(Magic)));
+            let max_magic = self.settings.get_max(Magic);
+            ui.add(egui::Slider::new(&mut self.settings.num_magic, 0..=max_magic));
             ui.end_row();
             ui.label("Support: ");
-            ui.add(egui::Slider::new(&mut self.settings.num_support, 0..=self.bloons_config.num_towers_of_category(Support)));
+            let max_support = self.settings.get_max(Support);
+            ui.add(egui::Slider::new(&mut self.settings.num_support, 0..=max_support));
         });
     }
 
     fn create_include_exclude_modes_ui(&mut self, ui: &mut Ui) {
         ui.collapsing("Include/Exclude Modes", |ui| {
             Grid::new("mode include exclude").show(ui, |ui| {
-                [Difficulty::Easy, Difficulty::Medium, Difficulty::Hard].into_iter()
+                [Easy, Medium, Hard].into_iter()
                     .for_each(|d| {
                         self.bloons_config.get_modes_of_difficulty(d)
                             .into_iter()
@@ -297,6 +303,37 @@ impl<'a> BloonsRandomizerApp<'a> {
                         if (i + 1) % 5 == 0 {
                             ui.end_row();
                         }
+                    })
+            });
+        });
+    }
+
+    fn create_include_exclude_towers_ui(&mut self, ui: &mut Ui) {
+        ui.collapsing("Include/Exclude Towers", |ui| {
+            Grid::new("tower include exclude").show(ui, |ui| {
+                [Primary, Military, Magic, Support].into_iter()
+                    .for_each(|c| {
+                        self.bloons_config.get_towers_of_category(c)
+                            .into_iter()
+                            .for_each(|tower| {
+                                let currently_selected = self.settings.active_towers.contains(tower);
+                                let tint = match currently_selected {
+                                    true => Self::SELECTED_COLOR,
+                                    false => Self::UNSELECTED_COLOR
+                                };
+
+                                if ui.add_sized(
+                                    [75.0, 75.0],
+                                    ImageButton::new(self.images.get_image(&tower.icon)).tint(tint),
+                                ).clicked() {
+                                    match currently_selected {
+                                        true => { self.settings.active_towers.remove(tower); }
+                                        false => { self.settings.active_towers.insert(tower.clone()); }
+                                    }
+                                }
+                            });
+
+                        ui.end_row();
                     })
             });
         });

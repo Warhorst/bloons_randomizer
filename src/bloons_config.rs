@@ -23,10 +23,6 @@ impl BloonsConfig {
         self.towers.iter().filter(move |t| t.category == category)
     }
 
-    pub fn num_towers_of_category(&self, category: Category) -> usize {
-        self.get_towers_of_category(category).into_iter().count()
-    }
-
     pub fn get_modes_of_difficulty(&self, difficulty: Difficulty) -> impl IntoIterator<Item=&Mode> {
         self.modes.iter().filter(move |m| m.difficulty == difficulty)
     }
@@ -38,14 +34,14 @@ pub struct Hero {
     pub icon: String
 }
 
-#[derive(Deserialize, Clone, Default)]
+#[derive(Deserialize, Clone, Default, Eq, PartialEq, Hash)]
 pub struct Tower {
     pub name: String,
     pub category: Category,
     pub icon: String
 }
 
-#[derive(Deserialize, Copy, Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Deserialize, Copy, Clone, Debug, Default, Eq, PartialEq, Hash)]
 pub enum Category {
     #[default]
     Primary,
