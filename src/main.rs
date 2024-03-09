@@ -4,14 +4,14 @@ use egui::{CentralPanel, Color32, Context, FontId, Grid, Image, ImageButton, Scr
 use rand::prelude::IteratorRandom;
 use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
-use rand::thread_rng;
+use rand::{Rng, thread_rng};
 
 use crate::bloons_config::{BloonsConfig, Category, Tower};
 use crate::bloons_config::Category::*;
 use crate::bloons_config::Difficulty::*;
 use crate::images::Images;
-use crate::selection::Selection;
-use crate::settings::Settings;
+use crate::selection::{PathRestriction, Selection};
+use crate::settings::{PathRestrictionSetting, Settings};
 
 mod bloons_config;
 mod settings;
@@ -93,15 +93,28 @@ impl<'a> BloonsRandomizerApp<'a> {
     pub fn random_select(&mut self) {
         let mut rng = thread_rng();
 
+        let create_path_restriction: Box<dyn Fn() -> Option<PathRestriction>> = match self.settings.path_restriction_setting {
+            PathRestrictionSetting::None => Box::new(|| None),
+            PathRestrictionSetting::Global => {
+                let r = Self::chose_path_restrictions();
+                Box::new(move || Some(r))
+            }
+            PathRestrictionSetting::Custom => Box::new(|| Some(Self::chose_path_restrictions()))
+        };
+
         let mode = self.settings.active_modes.iter().choose(&mut rng).cloned();
         let map = self.settings.active_maps.iter().choose(&mut rng).cloned();
         let hero = self.settings.active_heroes.iter().choose(&mut rng).cloned();
         let towers = [
-            self.choose_towers(&mut rng, Primary),
-            self.choose_towers(&mut rng, Military),
-            self.choose_towers(&mut rng, Magic),
-            self.choose_towers(&mut rng, Support),
-        ].into_iter().flat_map(|ts| ts.into_iter()).collect();
+            self.chose_towers(&mut rng, Primary),
+            self.chose_towers(&mut rng, Military),
+            self.chose_towers(&mut rng, Magic),
+            self.chose_towers(&mut rng, Support),
+        ]
+            .into_iter()
+            .flat_map(IntoIterator::into_iter)
+            .map(|t| (t, create_path_restriction()))
+            .collect();
 
         self.selection = Some(Selection {
             mode,
@@ -111,7 +124,16 @@ impl<'a> BloonsRandomizerApp<'a> {
         })
     }
 
-    fn choose_towers(
+    fn chose_path_restrictions() -> PathRestriction {
+        let mut rng = thread_rng();
+        PathRestriction {
+            top_max: rng.gen_range(0..=5),
+            center_max: rng.gen_range(0..=5),
+            bottom_max: rng.gen_range(0..=5),
+        }
+    }
+
+    fn chose_towers(
         &self,
         rng: &mut ThreadRng,
         category: Category,
@@ -148,6 +170,7 @@ impl<'a> App for BloonsRandomizerApp<'a> {
                 self.create_include_exclude_maps_ui(ui);
                 self.create_include_exclude_heroes_ui(ui);
                 self.create_include_exclude_towers_ui(ui);
+                self.create_path_setting_ui(ui);
 
                 if ui.button("Randomize").clicked() {
                     self.random_select();
@@ -177,8 +200,23 @@ impl<'a> App for BloonsRandomizerApp<'a> {
                     selection.towers
                         .iter()
                         .enumerate()
-                        .for_each(|(i, tower)| {
-                            ui.add_sized([75.0, 75.0], Image::new(self.images.get_image(&tower.icon)));
+                        .for_each(|(i, (tower, restriction_opt))| {
+                            match restriction_opt {
+                                None => {
+                                    ui.add_sized([75.0, 75.0], Image::new(self.images.get_image(&tower.icon)));
+                                }
+                                Some(restriction) => {
+                                    ui.horizontal(|ui| {
+                                        ui.add_sized([75.0, 75.0], Image::new(self.images.get_image(&tower.icon)));
+                                        ui.vertical(|ui| {
+                                            ui.label(restriction.top_max.to_string());
+                                            ui.label(restriction.center_max.to_string());
+                                            ui.label(restriction.bottom_max.to_string());
+                                        })
+                                    });
+                                }
+                            }
+
                             if (i + 1) % 5 == 0 {
                                 ui.end_row();
                             }
@@ -336,6 +374,14 @@ impl<'a> BloonsRandomizerApp<'a> {
                         ui.end_row();
                     })
             });
+        });
+    }
+
+    fn create_path_setting_ui(&mut self, ui: &mut Ui) {
+        ui.collapsing("Tower Path Setting", |ui| {
+            ui.radio_value(&mut self.settings.path_restriction_setting, PathRestrictionSetting::None, "Don't restrict tower paths");
+            ui.radio_value(&mut self.settings.path_restriction_setting, PathRestrictionSetting::Global, "Every tower has the same restriction");
+            ui.radio_value(&mut self.settings.path_restriction_setting, PathRestrictionSetting::Custom, "Every tower has a different restriction");
         });
     }
 }
