@@ -8,7 +8,7 @@ use rand::{Rng, thread_rng};
 
 use crate::bloons_config::{BloonsConfig, Category, Tower};
 use crate::bloons_config::Category::*;
-use crate::bloons_config::Difficulty::*;
+use crate::bloons_config::ModeDifficulty::*;
 use crate::images::Images;
 use crate::selection::{PathRestriction, Selection};
 use crate::settings::{PathRestrictionSetting, Settings};
