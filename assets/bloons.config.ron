@@ -285,6 +285,11 @@ BloonsConfig(
             difficulty: Beginner
         ),
         Map(
+            name: "Sulfur Springs",
+            icon: "maps/sulfur_springs.webp",
+            difficulty: Intermediate
+        ),
+        Map(
             name: "Water Park",
             icon: "maps/water_park.webp",
             difficulty: Intermediate
