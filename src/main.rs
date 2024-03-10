@@ -6,7 +6,7 @@ use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
 use rand::{Rng, thread_rng};
 
-use crate::bloons_config::{BloonsConfig, Category, MapDifficulty, Tower};
+use crate::bloons_config::{BloonsConfig, Category, MapDifficulty, ModeDifficulty, Tower};
 use crate::bloons_config::Category::*;
 use crate::bloons_config::MapDifficulty::*;
 use crate::bloons_config::ModeDifficulty::*;
@@ -91,9 +91,21 @@ impl<'a> BloonsRandomizerApp<'a> {
     const SELECTED_COLOR: Color32 = Color32::WHITE;
     const UNSELECTED_COLOR: Color32 = Color32::DARK_GRAY;
 
+    /// Select all modes which have the given difficulties
+    fn select_modes(&mut self, difficulties: &[ModeDifficulty]) {
+        self.settings.active_modes.clear();
+
+        for mode in &self.bloons_config.modes {
+            if difficulties.contains(&mode.difficulty) {
+                self.settings.active_modes.insert(mode.clone());
+            }
+        }
+    }
+
     /// Select all maps which have the given difficulties
     fn select_maps(&mut self, difficulties: &[MapDifficulty]) {
         self.settings.active_maps.clear();
+
         for map in &self.bloons_config.maps {
             if difficulties.contains(&map.difficulty) {
                 self.settings.active_maps.insert(map.clone());
@@ -266,6 +278,28 @@ impl<'a> BloonsRandomizerApp<'a> {
 
     fn create_include_exclude_modes_ui(&mut self, ui: &mut Ui) {
         ui.collapsing("Include/Exclude Modes", |ui| {
+            ui.horizontal(|ui| {
+                if ui.button("All").clicked() {
+                    self.select_modes(&[Easy, Medium, Hard]);
+                }
+
+                if ui.button("None").clicked() {
+                    self.select_modes(&[])
+                }
+
+                if ui.button("Easy").clicked() {
+                    self.select_modes(&[Easy])
+                }
+
+                if ui.button("Medium").clicked() {
+                    self.select_modes(&[Medium])
+                }
+
+                if ui.button("Hard").clicked() {
+                    self.select_modes(&[Hard])
+                }
+            });
+
             Grid::new("mode include exclude").show(ui, |ui| {
                 [Easy, Medium, Hard].into_iter()
                     .for_each(|d| {
