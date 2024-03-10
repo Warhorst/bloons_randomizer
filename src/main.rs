@@ -6,8 +6,9 @@ use rand::rngs::ThreadRng;
 use rand::seq::SliceRandom;
 use rand::{Rng, thread_rng};
 
-use crate::bloons_config::{BloonsConfig, Category, Tower};
+use crate::bloons_config::{BloonsConfig, Category, MapDifficulty, Tower};
 use crate::bloons_config::Category::*;
+use crate::bloons_config::MapDifficulty::*;
 use crate::bloons_config::ModeDifficulty::*;
 use crate::images::Images;
 use crate::selection::{PathRestriction, Selection};
@@ -90,7 +91,17 @@ impl<'a> BloonsRandomizerApp<'a> {
     const SELECTED_COLOR: Color32 = Color32::WHITE;
     const UNSELECTED_COLOR: Color32 = Color32::DARK_GRAY;
 
-    pub fn random_select(&mut self) {
+    /// Select all maps which have the given difficulties
+    fn select_maps(&mut self, difficulties: &[MapDifficulty]) {
+        self.settings.active_maps.clear();
+        for map in &self.bloons_config.maps {
+            if difficulties.contains(&map.difficulty) {
+                self.settings.active_maps.insert(map.clone());
+            }
+        }
+    }
+
+    fn random_select(&mut self) {
         let mut rng = thread_rng();
 
         let create_path_restriction: Box<dyn Fn() -> Option<PathRestriction>> = match self.settings.path_restriction_setting {
@@ -286,6 +297,32 @@ impl<'a> BloonsRandomizerApp<'a> {
 
     fn create_include_exclude_maps_ui(&mut self, ui: &mut Ui) {
         ui.collapsing("Include/Exclude Maps", |ui| {
+            ui.horizontal(|ui| {
+                if ui.button("All").clicked() {
+                    self.select_maps(&[Beginner, Intermediate, Advanced, Expert])
+                }
+
+                if ui.button("None").clicked() {
+                    self.select_maps(&[])
+                }
+
+                if ui.button("Beginner").clicked() {
+                    self.select_maps(&[Beginner])
+                }
+
+                if ui.button("Intermediate").clicked() {
+                    self.select_maps(&[Intermediate])
+                }
+
+                if ui.button("Advanced").clicked() {
+                    self.select_maps(&[Advanced])
+                }
+
+                if ui.button("Expert").clicked() {
+                    self.select_maps(&[Expert])
+                }
+            });
+
             Grid::new("map include exclude").show(ui, |ui| {
                 self.bloons_config.maps
                     .iter()
